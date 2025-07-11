@@ -1,7 +1,15 @@
-import { Link } from 'react-router-dom' 
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom' 
 
-
+type signinResponse = {
+    token:string,
+    message:string
+}
 function Signin(){
+    const [email , setEmail] = useState("")
+    const [password , setPassword] = useState("")
+    
+    const navigate = useNavigate()
 
     return (
        <div className='w-screen h-screen flex justify-center items-center'>
@@ -16,14 +24,25 @@ function Signin(){
            
             <div className='flex flex-col gap-1.5 p-2'>
                 <div className='p-2'>Email</div>
-                <input type="email" placeholder='abc@gmail.com' className='border border-slate-500 p-2 bg-slate-100 rounded-lg w-full'/>
+                <input type="email" placeholder='abc@gmail.com' className='border border-slate-500 p-2 bg-slate-100 rounded-lg w-full'
+                value={email} onChange={(e)=>{setEmail(e.target.value)}} />
             </div>
             <div className='flex flex-col gap-1.5 p-2'>
                 <div className='p-2'>Password</div>
-                <input type="password" placeholder='*********' className='border border-slate-500 p-2 bg-slate-100 rounded-lg w-full'/>
+                <input type="password" placeholder='*********' className='border border-slate-500 p-2 bg-slate-100 rounded-lg w-full'
+                value={password} onChange={(e)=>{setPassword(e.target.value)}} />
             </div>
             
-            <button className=' bg-sky-600 rounded-md p-1 mt-6 mb-6 w-full text-white'>Sign In</button>
+            <button className=' bg-sky-600 rounded-md p-1 mt-6 mb-6 w-full text-white' onClick={async () => {
+                const response = await axios.post<signinResponse>(`${import.meta.env.VITE_URL}/api/v1/user/signin` , {
+                    email,
+                    password
+                })
+                alert(response.data.message)
+                sessionStorage.setItem('token', response.data.token)
+                navigate("/")
+
+            }}>Sign In</button>
             
           </div>
         </div>
