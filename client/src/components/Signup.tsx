@@ -44,7 +44,11 @@ function Signup(){
             <button className=' bg-sky-600 rounded-md p-1 mt-6 mb-6 w-full text-white' onClick={async()=>{
 
                 try {
-                const response = await axios.post<signupResponse>(`${import.meta.env.VITE_URL}/api/v1/user/signup`)
+                const response = await axios.post<signupResponse>(`${import.meta.env.VITE_URL}/api/v1/user/signup` , {
+                    name,
+                    email,
+                    password
+                })
                 alert(response.data.message)
                 navigate("/verifyemail")
                 } catch (error:any) {

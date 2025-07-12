@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client"
 import { sendMail } from "../sendmail"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { boolean } from "zod"
+import { resetPasswordValidator } from "../validators/user.Validate"
 
 const prisma = new PrismaClient()
 
@@ -86,8 +87,36 @@ export const signin = async (req:Request , res:Response) => {
             message:"User Sign in sucessfully"
         })
     } catch (error) {
-        
+        return res.status(401).json({error: "user failed to sign in"})
+    }
+    
+}
+
+export const validateEmail= async(req:Request , res:Response)=>{
+    const {email} = req.body
+
+    try {
+        const result= resetPasswordValidator({email} )
+
+    if(!result == true){
+        return result
     }
 
-    
+    const user = await prisma.user.findFirst({
+        where:email
+    })
+
+    if(!user){
+        return res.status(400).json({message:"Invalid Email"})
+    }
+
+    if(!user.isverified){
+        return res.status(400).json({message : "Firstly verify email"})
+    }
+
+    return res.status(200).json({message:"Verification link sent to your Gmail"})
+    } catch (error) {
+        return res.status(400).json({error:""})
+    }
+
 }

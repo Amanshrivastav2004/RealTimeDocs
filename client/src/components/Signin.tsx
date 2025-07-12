@@ -13,7 +13,7 @@ function Signin(){
 
     return (
        <div className='w-screen h-screen flex justify-center items-center'>
-          <div className='w-[400px] h-[400px] bg-gray-50 rounded-lg shadow-md p-4 '>
+          <div className='w-[400px] h-[450px] bg-gray-50 rounded-lg shadow-md p-4 '>
             <div className='flex justify-center'>
                 <p className='font-bold text-2xl'>Get Started</p>
             </div>
@@ -34,6 +34,8 @@ function Signin(){
             </div>
             
             <button className=' bg-sky-600 rounded-md p-1 mt-6 mb-6 w-full text-white' onClick={async () => {
+                
+                try {
                 const response = await axios.post<signinResponse>(`${import.meta.env.VITE_URL}/api/v1/user/signin` , {
                     email,
                     password
@@ -41,8 +43,15 @@ function Signin(){
                 alert(response.data.message)
                 sessionStorage.setItem('token', response.data.token)
                 navigate("/")
-
+                } catch (error:any) {
+                    alert(error.response.data.error)
+                }
+               
             }}>Sign In</button>
+
+            <div className='flex justify-center items-center'>
+                <Link to='/forgot-password' className='text-blue-400 underline' >Forgot Password</Link>
+            </div>
             
           </div>
         </div>

@@ -13,9 +13,11 @@ export const signinschema = z.object({
     password:z.string().trim().min(6 , { message: "Password atleast 6 characters"})
 })
 
+export const resetschema =z.object({
+    email:z.string().trim().email({message: "Please give valid email"})
+})
 
-
-export const userValidator=(body: {name:string , email:string , password:string} , schema:ZodTypeAny )=>{
+export const userValidator=(body: {name?:string , email:string , password:string} , schema:ZodTypeAny )=>{
     const result = schema.safeParse(body)
     
     if(!result.success){
