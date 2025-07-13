@@ -1,7 +1,7 @@
-import expresss from 'express'
+import express from 'express'
 import { SigninAuthentication, SignupAuthentication } from '../middleware/authentication'
 import { resetpassword, signin, signup, validateEmail, verifyEmail, verifyresetToken } from '../handling/userHandling'
-const user = expresss.Router()
+const user = express.Router()
 
 
 user.post("/signup" , SignupAuthentication , signup)

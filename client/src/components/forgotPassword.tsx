@@ -36,7 +36,7 @@ useEffect(()=>{
             alert(error.response.data.error)
         }
     }
-})
+},[])
 
 if(isset){
     return(

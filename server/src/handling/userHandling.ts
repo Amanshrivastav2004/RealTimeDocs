@@ -26,8 +26,8 @@ export const signup = async (req:Request , res:Response ) => {
         
 
         await sendMail({
-            from: 'process.env.EMAIL_USER',
-            to: 'email',
+            from: process.env.EMAIL_USER,
+            to: email,
             subject: 'Welcome to RealTimeDocs',
             text: `Please click on the link to verify ${process.env.LINK}/verifyemail/${verificationtoken}`
         })
@@ -43,6 +43,8 @@ export const verifyEmail = async (req:Request , res:Response) => {
     const verificationtoken = req.params.verificationtoken
 
     try {
+     
+
         const decoded = jwt.verify(verificationtoken ,process.env.VERIFY_KEY as string )
 
         await prisma.user.update({
@@ -66,17 +68,17 @@ export const signin = async (req:Request , res:Response) => {
 
     try {
         const user = await prisma.user.findFirst({
-        where:email
+        where:{email}
         })
 
         if(!user){
-            return res.status(400).json({message: "User doesn't exist"})
+            return res.status(400).json({error: "User doesn't exist"})
         }
 
         const isMatch = await bcrypt.compare(password , user.password)
 
         if(!isMatch){
-            return res.status(401).json({message:"User doesn't exist"})
+            return res.status(401).json({error:"User doesn't exist"})
         }
 
         const token = jwt.sign({email , userId:user.id} , process.env.JWT_KEY as string)
@@ -97,27 +99,27 @@ export const validateEmail= async(req:Request , res:Response)=>{
     try {
     const result= userValidator({email} , resetschema )
 
-    if(!result == true){
-        return result
+    if(result !== true){
+         return res.status(400).json({ error: result });
     }
 
     const user = await prisma.user.findFirst({
-        where:email
+        where:{email}
     })
 
     if(!user){
-        return res.status(400).json({message:"Invalid Email"})
+        return res.status(400).json({error:"Invalid Email"})
     }
 
     if(!user.isverified){
-        return res.status(400).json({message : "Firstly verify email"})
+        return res.status(400).json({error : "Firstly verify email"})
     }
 
     const resetToken = jwt.sign({email} , process.env.RESETPASSWORD_KEY as string )
 
     await sendMail({
-            from: 'process.env.EMAIL_USER',
-            to: 'email',
+            from: process.env.EMAIL_USER,
+            to: email,
             subject: 'Welcome to RealTimeDocs',
             text: `Please click on the link to reset password ${process.env.LINK}/reset-password/${resetToken}`
         })
@@ -150,8 +152,8 @@ export const resetpassword = async (req:Request , res:Response) => {
 
     try {
     const result= userValidator({password , confirmpassword } , resetpasswordschema )
-    if(!result == true){
-        return result
+    if(result !== true){
+         return res.status(400).json({ error: result });
     }
 
     if(!(password==confirmpassword)){

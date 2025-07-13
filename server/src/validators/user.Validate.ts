@@ -27,8 +27,13 @@ export const userValidator=(body: object , schema:ZodTypeAny )=>{
     const result = schema.safeParse(body)
     
     if(!result.success){
+        
         return result.error.errors[0].message
     }
-   return true
+
+    else{
+        return true
+    }
+   
 }
 

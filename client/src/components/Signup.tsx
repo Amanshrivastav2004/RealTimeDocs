@@ -49,6 +49,9 @@ function Signup(){
                     email,
                     password
                 })
+
+                
+                
                 alert(response.data.message)
                 navigate("/verifyemail")
                 } catch (error:any) {

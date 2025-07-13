@@ -8,11 +8,11 @@ config()
 
 app.use(cors())
 
-console.log('Timezone:', process.env.TZ);
-console.log('Current time:', new Date().toString());
 
 app.use(express.json())
 
 app.use("/api/v1" , router)
 
-app.listen(3000)
+app.listen(3000 , ()=>{
+    console.log("Server is running at 3000 port")
+})

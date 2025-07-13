@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams , Link} from "react-router-dom"
 
@@ -13,14 +14,14 @@ export const Verify=()=>{
 
 
     useEffect(()=>{
-
         const verifyEmail = async () => {
             if(verificationtoken){
                 try {
-                    const response = await axios.put<verifyEmailResponse>(`${import.meta.env.VITE_URL}/api/v1/user/verify/${verificationtoken}`)
+                    const response = await axios.put<verifyEmailResponse>(`${import.meta.env.VITE_URL}/api/v1/user/verify/${verificationtoken}` )
                     alert(response.data.message)
                     setVerified(response.data.verified)
                 } catch (error:any) {
+                    console.error(error)
                     alert(error.response.data.error)
                 }             
             }
