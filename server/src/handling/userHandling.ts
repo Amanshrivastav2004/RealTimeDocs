@@ -3,8 +3,7 @@ import bcrypt from 'bcrypt'
 import { PrismaClient } from "@prisma/client"
 import { sendMail } from "../sendmail"
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { boolean } from "zod"
-import { resetPasswordValidator } from "../validators/user.Validate"
+import { resetpasswordschema, resetschema, userValidator } from "../validators/user.Validate"
 
 const prisma = new PrismaClient()
 
@@ -41,7 +40,7 @@ export const signup = async (req:Request , res:Response ) => {
 
 
 export const verifyEmail = async (req:Request , res:Response) => {
-    const verificationtoken = req.params.token
+    const verificationtoken = req.params.verificationtoken
 
     try {
         const decoded = jwt.verify(verificationtoken ,process.env.VERIFY_KEY as string )
@@ -74,7 +73,7 @@ export const signin = async (req:Request , res:Response) => {
             return res.status(400).json({message: "User doesn't exist"})
         }
 
-        const isMatch = bcrypt.compare(password , user.password)
+        const isMatch = await bcrypt.compare(password , user.password)
 
         if(!isMatch){
             return res.status(401).json({message:"User doesn't exist"})
@@ -96,7 +95,7 @@ export const validateEmail= async(req:Request , res:Response)=>{
     const {email} = req.body
 
     try {
-        const result= resetPasswordValidator({email} )
+    const result= userValidator({email} , resetschema )
 
     if(!result == true){
         return result
@@ -114,9 +113,65 @@ export const validateEmail= async(req:Request , res:Response)=>{
         return res.status(400).json({message : "Firstly verify email"})
     }
 
+    const resetToken = jwt.sign({email} , process.env.RESETPASSWORD_KEY as string )
+
+    await sendMail({
+            from: 'process.env.EMAIL_USER',
+            to: 'email',
+            subject: 'Welcome to RealTimeDocs',
+            text: `Please click on the link to reset password ${process.env.LINK}/reset-password/${resetToken}`
+        })
+
     return res.status(200).json({message:"Verification link sent to your Gmail"})
+
     } catch (error) {
-        return res.status(400).json({error:""})
+        return res.status(400).json({error:"Unable to send verification link to Gmail"})
     }
 
+}
+
+
+export const verifyresetToken = (req:Request , res:Response) => {
+    const resetToken = req.params.resetToken
+
+    try {
+        const decoded = jwt.verify(resetToken , process.env.RESETPASSWORD_KEY as string)
+
+        return res.status(200).json({message:"Ready to reset password" , email:(decoded as JwtPayload).email})
+    } catch (error) {
+        return res.status(400).json({error:"Unable to load page"})
+    }
+}
+
+export const resetpassword = async (req:Request , res:Response) => {
+    const password = req.body.password
+    const confirmpassword = req.body.confirmpassword
+    const email= req.body.email
+
+    try {
+    const result= userValidator({password , confirmpassword } , resetpasswordschema )
+    if(!result == true){
+        return result
+    }
+
+    if(!(password==confirmpassword)){
+        return res.status(400).json({error:"Password should be equal to Confirm Password"})
+    }
+
+    const hashedpassword= await bcrypt.hash(password, 10)
+
+    await prisma.user.update({
+        where:{
+            email
+        },
+        data:{
+            password:hashedpassword
+        }
+    })
+
+    return res.status(200).json({message:"Password reset sucessfully"})
+
+    } catch (error) {
+        return res.status(401).json({error:"Unable to update password"})
+    }
 }

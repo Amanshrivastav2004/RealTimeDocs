@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-
 import { signinschema, signupSchema, userValidator } from "../validators/user.Validate";
 import {  PrismaClient } from "@prisma/client";
 
@@ -10,7 +9,7 @@ export const SignupAuthentication = async (req:Request , res:Response , next:Nex
     const {name , email , password} = req.body
     
     try {
-        const result = userValidator({name , email , password} , signupSchema)
+    const result = userValidator({name , email , password} , signupSchema)
     if(!result == true){
         return result
     }
@@ -33,6 +32,8 @@ export const SignupAuthentication = async (req:Request , res:Response , next:Nex
    
 }
 
+
+
 export const SigninAuthentication = (req:Request , res:Response , next:NextFunction)=>{
 
     const body = req.body
@@ -41,4 +42,5 @@ export const SigninAuthentication = (req:Request , res:Response , next:NextFunct
     if(!result){
         return result
     }
+    next()
 }
