@@ -19,7 +19,14 @@ model User{
   name String
   email String @unique
   password String
-  verificationtoken Boolean?
   isverified Boolean? @default(false)
-  passwordresettoken Boolean?
+  documents Document[]
+}
+
+model Document {
+  id Int @id @default(autoincrement())
+  title String
+  content String
+  userId Int
+  user User @relation(fields: [userId] , references: [id])
 }
