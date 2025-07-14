@@ -22,7 +22,7 @@ export const signup = async (req:Request , res:Response ) => {
         })
         
         
-        const verificationtoken = jwt.sign({email} , process.env.VERIFY_KEY as string)
+        const verificationtoken = jwt.sign({email} , process.env.VERIFY_KEY as string , {expiresIn:"1h"})
         
 
         await sendMail({
@@ -46,6 +46,15 @@ export const verifyEmail = async (req:Request , res:Response) => {
      
 
         const decoded = jwt.verify(verificationtoken ,process.env.VERIFY_KEY as string )
+
+        const user = await prisma.user.findFirst({
+            where:{
+                email:(decoded as JwtPayload).email
+            }})
+        
+        if(user?.isverified){
+            return res.status(200).json({message : "User is already verified"})
+        }
 
         await prisma.user.update({
             where:{
@@ -75,10 +84,14 @@ export const signin = async (req:Request , res:Response) => {
             return res.status(400).json({error: "User doesn't exist"})
         }
 
+        if(!user.isverified){
+            return res.status(400).json({error: "Verify your email first"})
+        }
+
         const isMatch = await bcrypt.compare(password , user.password)
 
         if(!isMatch){
-            return res.status(401).json({error:"User doesn't exist"})
+            return res.status(401).json({error:"Password is incorrect"})
         }
 
         const token = jwt.sign({email , userId:user.id} , process.env.JWT_KEY as string)
@@ -115,7 +128,7 @@ export const validateEmail= async(req:Request , res:Response)=>{
         return res.status(400).json({error : "Firstly verify email"})
     }
 
-    const resetToken = jwt.sign({email} , process.env.RESETPASSWORD_KEY as string )
+    const resetToken = jwt.sign({email} , process.env.RESETPASSWORD_KEY as string , {expiresIn:"1h"})
 
     await sendMail({
             from: process.env.EMAIL_USER,
@@ -126,6 +139,8 @@ export const validateEmail= async(req:Request , res:Response)=>{
 
     return res.status(200).json({message:"Verification link sent to your Gmail"})
 
+    
+
     } catch (error) {
         return res.status(400).json({error:"Unable to send verification link to Gmail"})
     }
@@ -133,11 +148,16 @@ export const validateEmail= async(req:Request , res:Response)=>{
 }
 
 
-export const verifyresetToken = (req:Request , res:Response) => {
+export const verifyresetToken = async(req:Request , res:Response) => {
     const resetToken = req.params.resetToken
 
     try {
+
         const decoded = jwt.verify(resetToken , process.env.RESETPASSWORD_KEY as string)
+
+        const user = await prisma.user.findFirst({
+            where:{email:(decoded as JwtPayload).email}
+        })
 
         return res.status(200).json({message:"Ready to reset password" , email:(decoded as JwtPayload).email})
     } catch (error) {
