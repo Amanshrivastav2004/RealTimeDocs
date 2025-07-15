@@ -40,8 +40,9 @@ export const SigninAuthentication = (req:Request , res:Response , next:NextFunct
     const body = req.body
 
     const result = userValidator(body , signinschema)
-    if(!result){
-        return result
+    if(result !== true){
+         return res.status(400).json({ error: result });
     }
     next()
 }
+

@@ -3,8 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import axios from 'axios'
 
 type passwordResponse={
-    message:string,
-    
+    message:string
 }
 type verifypasswordResponse={
     message:string,
@@ -91,7 +90,7 @@ return(
                         })
                         alert(response.data.message)
                     } catch (error:any) {
-                        alert(error.response.data.error)
+                        alert(error?.response?.data?.message || "Something went wrong")
                     }
                 }}>Submit</button>
                 

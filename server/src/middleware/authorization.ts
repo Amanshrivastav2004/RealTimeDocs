@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from 'jsonwebtoken'
+import { customRequest } from "../interfaces/interfaces";
 
-interface customRequest extends Request{
-    userEmail?:string
-    userId?:Number
-}
 
 export const userAuthorization = (req:customRequest , res:Response , next:NextFunction)=>{
 
