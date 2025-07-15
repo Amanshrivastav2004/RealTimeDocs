@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client"
 import { sendMail } from "../sendmail"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { resetpasswordschema, resetschema, userValidator } from "../validators/user.Validate"
+import { customRequest } from "../interfaces/interfaces"
 
 const prisma = new PrismaClient()
 
@@ -195,5 +196,19 @@ export const resetpassword = async (req:Request , res:Response) => {
 
     } catch (error) {
         return res.status(401).json({error:"Unable to update password"})
+    }
+}
+
+export const getUser=async(req:customRequest , res:Response)=>{
+    const userId = req.userId
+
+    try {
+        const user = await prisma.user.findFirst({
+            where:{id:userId}
+        })
+        return res.status(200).json({name:user?.name})
+    } catch (error) {
+        console.error(error)
+        return res.status(400).json({error:"Unable to get user"})
     }
 }

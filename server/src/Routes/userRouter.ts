@@ -1,6 +1,7 @@
 import express from 'express'
 import { SigninAuthentication, SignupAuthentication } from '../middleware/authentication'
-import { resetpassword, signin, signup, validateEmail, verifyEmail, verifyresetToken } from '../handling/userHandling'
+import { getUser, resetpassword, signin, signup, validateEmail, verifyEmail, verifyresetToken } from '../handling/userHandling'
+import { userAuthorization } from '../middleware/authorization'
 const user = express.Router()
 
 
@@ -10,5 +11,6 @@ user.post("/signin", SigninAuthentication , signin)
 user.post("/forgot-password" , validateEmail )
 user.get("/reset-password/:resetToken" , verifyresetToken )
 user.put("/reset-password" , resetpassword)
+user.get("/" ,userAuthorization , getUser )
 
 export default user
