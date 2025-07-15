@@ -1,9 +1,10 @@
 import './App.css'
-import Signup from './components/Signup'
+import Signup from './pages/Signup'
 import { BrowserRouter as Router , Routes , Route } from 'react-router-dom'
-import Signin from './components/Signin'
-import { Verify } from './components/verify'
-import { ForgotPassword } from './components/forgotPassword'
+import Signin from './pages/Signin'
+import { Verify } from './pages/verify'
+import { ForgotPassword } from './pages/forgotPassword'
+import Home from './pages/Home'
 
 function App() {
   
@@ -18,6 +19,7 @@ function App() {
           <Route path="/verifyemail/:verificationtoken" element={<Verify/>} />
           <Route path="/forgot-password" element={<ForgotPassword/>} />
           <Route path="/reset-password/:resetToken" element={<ForgotPassword/>} />
+          <Route path="/" element={<Home/>} />
         </Routes>
       </Router> 
     </>
