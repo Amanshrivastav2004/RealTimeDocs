@@ -5,7 +5,6 @@ import { customRequest } from "../interfaces/interfaces";
 const prisma = new PrismaClient()
 
 export const createdocument=async (req:customRequest , res:Response) => {
-    const {title , content}= req.body
     const userId = req.userId
 
     if(!userId){
@@ -15,8 +14,6 @@ export const createdocument=async (req:customRequest , res:Response) => {
     try {
     const document = await prisma.document.create({
         data:{
-            title,
-            content,
             userId
         }
     })
