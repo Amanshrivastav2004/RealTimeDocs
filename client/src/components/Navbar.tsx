@@ -16,14 +16,15 @@ const Navbar=()=>{
     if(token){
 
         try {
-            const getuser =async()=>{
+        (async()=>{
         const response = await axios.get<getuserResponse>(`${import.meta.env.VITE_URL}/api/v1/user/`, {
             headers:{
                 authorization:token
             }
         })
+        console.log(response)
        setName(response.data.name)
-    }
+    })()
         } catch (error:any) {
             alert(error.response.data.error)
         }

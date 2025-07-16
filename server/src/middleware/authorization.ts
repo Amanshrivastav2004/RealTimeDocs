@@ -15,7 +15,10 @@ export const userAuthorization = (req:customRequest , res:Response , next:NextFu
         const decoded  = jwt.verify(acessToken , process.env.JWT_KEY as string)
 
         req.userEmail = (decoded as JwtPayload).email
-        req.userId = (decoded as JwtPayload).userId
+        
+        req.userId = (decoded as JwtPayload).userId 
+        console.log(`user authorization: ${req.userId}`) 
+        
         next()
     } catch (error) {
         return res.status(401).json({error:(error as Error).message})

@@ -1,14 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { customRequest } from "../interfaces/interfaces";
+import { error } from "console";
 
 const prisma = new PrismaClient()
 
 export const createdocument=async (req:customRequest , res:Response) => {
     const userId = req.userId
 
+    console.log(`create document: ${req.userId}`)
+
     if(!userId){
-        return res.status(400)
+        return res.status(400).json({error: "userId not founddd"})
     }
 
     try {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from 'axios';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Documentcard from "./Documentcard";
 
 interface Document{
     id:number
@@ -38,6 +39,11 @@ export  const  Body = ()=>{
     },[])
 
     const createdocument = async () => {
+        const token = sessionStorage.getItem("token")
+
+        if (!token) {
+            alert("user id not found createdoc at frontend")
+        }
 
         try {
         const response = await axios.post<createdocresponse>(`${import.meta.env.VITE_URL}/api/v1/document/`, {} , {
@@ -45,10 +51,12 @@ export  const  Body = ()=>{
             authorization:sessionStorage.getItem('token')
             }
         } )
+        
         alert(response.data.message)
-        navigate(`/document/${response.data.}`)
-        } catch (error) {
-            
+        // navigate(`/document/${response.data.document.id}`)
+        } catch (error:any) {
+            console.log(error?.response?.data); 
+            alert(error?.response?.data?.message || "Unexpected error");
         }
    
     }
@@ -63,26 +71,9 @@ export  const  Body = ()=>{
                     </button>
                 </div>
                 <p className="font-bold text-lg">Recent Documents</p>
-                <div className="flex flex-wrap gap-8 ">
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                    <div className="h-[200px] w-[150px] bg-white">
-
-                    </div>
-                </div>
+                
+                <Documentcard documents={documents}></Documentcard>
+                   
             </div>
     )
 }
