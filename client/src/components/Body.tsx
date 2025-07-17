@@ -29,13 +29,19 @@ export  const  Body = ()=>{
 
      useEffect(()=>{
         (async () => {
-            const response = await axios.get<getdocresponse>(`${import.meta.env.VITE_URL}/`,{
+            
+            try {
+                const response = await axios.get<getdocresponse>(`${import.meta.env.VITE_URL}/api/v1/document/`,{
                 headers:{
                     authorization: sessionStorage.getItem('token')
                 }
             })
             setDocuments(response.data.documents)
+            } catch (error:any) {
+                alert(error.response.data.error)
+            }
         })()
+        
     },[])
 
     const createdocument = async () => {
@@ -53,10 +59,10 @@ export  const  Body = ()=>{
         } )
         
         alert(response.data.message)
-        // navigate(`/document/${response.data.document.id}`)
+        navigate(`/document/${response.data.document.id}`)
         } catch (error:any) {
             console.log(error?.response?.data); 
-            alert(error?.response?.data?.message || "Unexpected error");
+            alert(error?.response?.data?.error);
         }
    
     }

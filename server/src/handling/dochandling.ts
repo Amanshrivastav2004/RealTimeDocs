@@ -23,7 +23,7 @@ export const createdocument=async (req:customRequest , res:Response) => {
 
     return res.status(200).json({message:"Document created" , document })
     } catch (error) {
-        return res.status(400).json({error : (error as Error).message})
+        return res.status(400).json({error : "error in create doc fn"})
     }
    
 }

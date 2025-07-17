@@ -5,7 +5,7 @@ import { userAuthorization } from '../middleware/authorization';
 const docRouter =express.Router()
 
 
-docRouter.post("/" , docValidator(documentSchema) , userAuthorization , createdocument )
+docRouter.post("/" ,  userAuthorization , createdocument )
 docRouter.get("/" , userAuthorization , allDocuments)
 docRouter.get("/search" , userAuthorization , searchDocument)
 docRouter.delete("/delete/:docId" , userAuthorization , deleteDocument)

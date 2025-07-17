@@ -16,22 +16,24 @@ const Navbar=()=>{
     if(token){
 
         try {
-        (async()=>{
+        const getuser = async()=>{
         const response = await axios.get<getuserResponse>(`${import.meta.env.VITE_URL}/api/v1/user/`, {
             headers:{
                 authorization:token
             }
         })
-        console.log(response)
+        console.log(response.data.name)
        setName(response.data.name)
-    })()
+    }
+    getuser()
         } catch (error:any) {
             alert(error.response.data.error)
         }
 
     }
     
-   })
+   },[])
+
     return (
         <div className="w-screen h-[60px] bg-white flex justify-between px-7 py-4">
             <div className="flex gap-4 ">

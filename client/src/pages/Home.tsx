@@ -10,14 +10,14 @@ const Home=()=>{
 
 
     return(
-        <div className="min-h-screen w-screen bg-gray-300">
+        <div className="min-h-screen w-screen bg-gray-300 flex flex-col">
             <Navbar></Navbar>
-            <div>
+            <div className="grow">
                 <Body></Body>
             </div>
-            <div className="bg-blue-500">
+            <footer className="bg-blue-500">
                 © 2025 Docify. All rights Reserved
-            </div>
+            </footer>
         </div>
     )
 }
