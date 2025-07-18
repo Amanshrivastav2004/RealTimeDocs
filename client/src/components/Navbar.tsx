@@ -10,6 +10,7 @@ const Navbar=()=>{
 
     const [name , setName] = useState("")
     const token = sessionStorage.getItem('token')
+    const [isOpen , setisopen] = useState(false)
 
    useEffect(()=>{
 
