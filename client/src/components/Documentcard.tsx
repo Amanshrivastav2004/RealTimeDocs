@@ -15,13 +15,13 @@ const Documentcard = ()=>{
     const [isOpen , setisopen] = useState(false)
     const navigate = useNavigate()
 
-    const getDocuments = useStore((state) => state.getDocuments())
+    const getDocuments = useStore(state => state.getDocuments)
     
     const documents = useStore((state)=> state.documents)
     
 
     useEffect(()=>{
-        //@ts-ignore
+        
         getDocuments()
     }, [])
 
@@ -42,14 +42,14 @@ const Documentcard = ()=>{
         <div className="flex flex-wrap gap-8">
             {documents.map(doc=>(
             <div className="h-[250px] w-[150px] bg-white flex flex-col" key={doc.id}>
-                <div className="grow bg-gray-200">
+                <div className="grow bg-gray-200 border-b border-b-gray-300">
 
                 </div>
                 <div className="flex flex-col  h-[60px] gap-1 ">
-                    <div className='text-sm m-2 h-[10px]'>Untitled Documents</div>
+                    <div className='text-sm m-2 h-[10px]'>{doc.title}</div>
                     <div className='flex justify-between gap-2 '>
                         <img src={image} className="h-6 m-1" />
-                        <div className='text-sm'>5-6-2024</div>
+                        <div className='text-sm m-1'>5-6-2024</div>
                         <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-three-dots-vertical h-7 w-4 text-gray-500" viewBox="0 0 16 16"
                              onClick={ (e)=>{handlePosition(e )}}>
                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>

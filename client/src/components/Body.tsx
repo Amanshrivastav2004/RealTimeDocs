@@ -26,7 +26,7 @@ interface createdocresponse{
 export  const  Body = ()=>{
 
     
-    const getDocuments = useStore((state) => state.getDocuments())
+    const getDocuments = useStore((state) => state.getDocuments)
 
     const documents = useStore((state)=> state.documents)
     
@@ -53,7 +53,7 @@ export  const  Body = ()=>{
         } )
         
         alert(response.data.message)
-        //@ts-ignore
+        
         getDocuments()
         // navigate(`/document/${response.data.document.id}`)
         } catch (error:any) {

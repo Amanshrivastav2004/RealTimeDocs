@@ -18,7 +18,7 @@ interface Document{
 }
 
 interface getdocresponse{
-    documents:Document[]
+    filteredDocuments:Document[]
 }
 
 const Navbar=()=>{
@@ -27,14 +27,13 @@ const Navbar=()=>{
     const token = sessionStorage.getItem('token')
     const [isOpen , setisopen] = useState(false)
     const [position , setPosition] = useState({top:0 , left:0})
-    const [filter , setfilter] = useState("")
     const debounce = useRef<number | null>(null)
     const { setDocuments } = useStore()
 
     const navigate = useNavigate()
 
    useEffect(()=>{
-    if(token){
+    if(!token){
         return alert("Token is missing")
     }
         try {
@@ -73,7 +72,7 @@ const Navbar=()=>{
                         authorization: sessionStorage.getItem('token')
                     }
                 })
-                setDocuments(response.data.documents)
+                setDocuments(response.data.filteredDocuments)
             }, 300);
         } catch (error) {
             
@@ -95,7 +94,7 @@ const Navbar=()=>{
             </div>
             <div className="flex gap-4">
                 <input type="text" placeholder="Search documents..." className="rounded-md bg-gray-300 p-2 h-8 w-60 text-center"
-                value={filter} onChange={(e)=>{filterdocs(e.target.value)}}/>
+                 onChange={(e)=>{ filterdocs(e.target.value)}}/>
                 <button className="h-8 w-8 rounded-full bg-blue-400 text-white text-2xl" onClick={(e)=>{handlePosition(e)}}>{name[0]}</button>
             </div>
             {isOpen && (
