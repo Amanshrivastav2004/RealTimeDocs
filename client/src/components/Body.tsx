@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Documentcard from "./Documentcard";
+import { useEffect, useState } from 'react';
+import { useStore } from '../store/zustand';
 
 interface Document{
     id:number
@@ -10,6 +11,7 @@ interface Document{
     updatedAt:string
     userId:number
 }
+
 
 interface getdocresponse{
     documents:Document[]
@@ -23,32 +25,24 @@ interface createdocresponse{
 
 export  const  Body = ()=>{
 
-    const navigate = useNavigate()
+    
+    const getDocuments = useStore((state) => state.getDocuments())
 
-    const [documents , setDocuments] = useState<Document[]>([]);
-
-     useEffect(()=>{
-        (async () => {
-            
-            try {
-                const response = await axios.get<getdocresponse>(`${import.meta.env.VITE_URL}/api/v1/document/`,{
-                headers:{
-                    authorization: sessionStorage.getItem('token')
-                }
-            })
-            setDocuments(response.data.documents)
-            } catch (error:any) {
-                alert(error.response.data.error)
-            }
-        })()
-        
-    },[])
+    const documents = useStore((state)=> state.documents)
+    
+    useEffect(()=>{
+        //@ts-ignore
+            getDocuments()
+        },[])
+    
+ const navigate = useNavigate()
+    
 
     const createdocument = async () => {
         const token = sessionStorage.getItem("token")
 
         if (!token) {
-            alert("user id not found createdoc at frontend")
+            alert("User is not authenticated")
         }
 
         try {
@@ -59,7 +53,9 @@ export  const  Body = ()=>{
         } )
         
         alert(response.data.message)
-        navigate(`/document/${response.data.document.id}`)
+        //@ts-ignore
+        getDocuments()
+        // navigate(`/document/${response.data.document.id}`)
         } catch (error:any) {
             console.log(error?.response?.data); 
             alert(error?.response?.data?.error);
@@ -78,7 +74,7 @@ export  const  Body = ()=>{
                 </div>
                 <p className="font-bold text-lg">Recent Documents</p>
                 
-                <Documentcard documents={documents}></Documentcard>
+                <Documentcard ></Documentcard>
                    
             </div>
     )
