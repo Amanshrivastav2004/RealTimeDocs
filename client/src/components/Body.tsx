@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Documentcard from "./Documentcard";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useStore } from '../store/zustand';
 
 interface Document{
@@ -12,16 +12,10 @@ interface Document{
     userId:number
 }
 
-
-interface getdocresponse{
-    documents:Document[]
-}
-
 interface createdocresponse{
     message:string
     document:Document
 }
-
 
 export  const  Body = ()=>{
 
@@ -31,7 +25,7 @@ export  const  Body = ()=>{
     const documents = useStore((state)=> state.documents)
     
     useEffect(()=>{
-        //@ts-ignore
+       
             getDocuments()
         },[])
     
@@ -55,7 +49,7 @@ export  const  Body = ()=>{
         alert(response.data.message)
         
         getDocuments()
-        // navigate(`/document/${response.data.document.id}`)
+        navigate(`/document/${response.data.document.id}`)
         } catch (error:any) {
             console.log(error?.response?.data); 
             alert(error?.response?.data?.error);
