@@ -17,7 +17,7 @@ export const userAuthorization = (req:customRequest , res:Response , next:NextFu
         req.userEmail = (decoded as JwtPayload).email
         
         req.userId = (decoded as JwtPayload).userId 
-        console.log(`user authorization: ${req.userId}`) 
+        
         
         next()
     } catch (error) {
