@@ -29,6 +29,7 @@ const Navbar=()=>{
     const [position , setPosition] = useState({top:0 , left:0})
     const debounce = useRef<number | null>(null)
     const { setDocuments } = useStore()
+    const getDocuments = useStore(state => state.getDocuments)
 
     const navigate = useNavigate()
 
@@ -67,6 +68,11 @@ const Navbar=()=>{
     
         try {
             debounce.current = setTimeout(async() => {
+                if(filter==""){
+                    getDocuments()
+                    return;
+                }
+
                 const response = await axios.get<getdocresponse>(`${import.meta.env.VITE_URL}/api/v1/document/?filter=${filter}` , {
                     headers:{
                         authorization: sessionStorage.getItem('token')
@@ -74,8 +80,8 @@ const Navbar=()=>{
                 })
                 setDocuments(response.data.filteredDocuments)
             }, 300);
-        } catch (error) {
-            
+        } catch (error:any) {
+            alert(error.response.data.error)
         }
     
    }

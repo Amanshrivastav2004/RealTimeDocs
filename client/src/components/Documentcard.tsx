@@ -17,8 +17,7 @@ const Documentcard = ()=>{
 
     const getDocuments = useStore(state => state.getDocuments)
     
-    const documents = useStore((state)=> state.documents)
-    
+    const documents = useStore((state)=> state.documents) 
 
     useEffect(()=>{
         
@@ -41,12 +40,15 @@ const Documentcard = ()=>{
     return (
         <div className="flex flex-wrap gap-8">
             {documents.map(doc=>(
-            <div className="h-[250px] w-[150px] bg-white flex flex-col" key={doc.id}>
+            <div className="h-[250px] w-[150px] bg-white flex flex-col" key={doc.id}
+            onClick={()=>{
+            navigate(`/document/${doc.id}`) 
+            }}>
                 <div className="grow bg-gray-200 border-b border-b-gray-300">
-
+                     <p className='text-xs'>{doc.content }</p>
                 </div>
                 <div className="flex flex-col  h-[60px] gap-1 ">
-                    <div className='text-sm m-2 h-[10px]'>{doc.title}</div>
+                    <div className='text-sm m-2 h-[10px]'>{doc.title || "Untitled Document"}</div>
                     <div className='flex justify-between gap-2 '>
                         <img src={image} className="h-6 m-1" />
                         <div className='text-sm m-1'>5-6-2024</div>

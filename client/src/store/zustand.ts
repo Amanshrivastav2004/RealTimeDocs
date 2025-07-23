@@ -9,6 +9,10 @@ interface Document{
     userId:number
 }
 
+interface Response{
+        message:string
+    }
+
 interface Documentt{
     title:string
     content:string
@@ -22,10 +26,10 @@ interface StoreState{
     documents:Document[]
     getDocuments:()=> Promise<void>;
     setDocuments:(docs:Document[])=> void
-    title:string
-    setTitle:(titlee:string)=> void
-    content:string
-    setContent:(contentt:string)=>void
+    // title:string
+    // setTitle:(titlee:string)=> void
+    // content:string
+    // setContent:(contentt:string)=>void
     document:Documentt
     setDocument:(data:{title?:string , content?:string})=>void
     updateDocs:(docId:number , document:{title?:string , content?:string})=> Promise<void>;
@@ -47,19 +51,21 @@ export const useStore = create<StoreState>((set)=>({
         }
     } ,
     setDocuments:(docs)=> set({documents:docs}),
-    title:"",
-    setTitle:(titlee)=>set({title:titlee}),
-    content:"",
-    setContent:(contentt)=>set({content:contentt}),
+    // title:"",
+    // setTitle:(titlee)=>set({title:titlee}),
+    // content:"",
+    // setContent:(contentt)=>set({content:contentt}),
     document:{
         title:"",
         content:""
     },
-    setDocument:(data)=>set((state)=>({...state.document,
-        ...data
-    })),
+    setDocument:(data)=>set((state)=>({document: {
+      ...state.document,
+      ...data
+    },})),
     updateDocs: async (docId , document) => {
-        const res = await axios.put(`${import.meta.env.VITE_URL}api/v1/document/update/${docId}`,{
+        // console.log(document)
+        const res = await axios.put<Response>(`${import.meta.env.VITE_URL}/api/v1/document/update/${docId}`,{
             title:document.title,
             content:document.content
         } , {
@@ -67,5 +73,6 @@ export const useStore = create<StoreState>((set)=>({
                 authorization:sessionStorage.getItem('token')
             }
         })
+        alert(res.data.message)
     }
 }))

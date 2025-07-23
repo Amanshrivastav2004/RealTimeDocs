@@ -59,6 +59,20 @@ export const allDocuments = async (req:customRequest , res:Response , next:NextF
 
 }
 
+export const getonedoc = async (req:customRequest , res:Response , next:NextFunction) => {
+    const docId= Number(req.params.docId)
+    console.log("in getonedoc backend")
+    console.log(docId)
+    try {
+        const document =await prisma.document.findFirst({
+            where:{id:docId}
+        })
+        return res.status(200).json({document})
+    } catch (error) {
+        return res.status(400).json({error:(error as Error).message})
+    }
+}
+
 export const searchDocument = async (req:customRequest , res:Response , next:NextFunction) => {
 
     const {filter} = req.query
@@ -113,6 +127,36 @@ export const deleteDocument= async (req:customRequest , res:Response , next:Next
 
     } catch (error) {
         return res.status(400).json({error:(error as Error).message})
+    }
+
+}
+
+export const updateDocs = async (req:Request , res:Response , next:NextFunction) => {
+    const {title , content} = req.body
+    const docId = Number(req.params.docId)
+
+
+    try {
+        if(!title){
+        await prisma.document.update({
+            where:{id:docId},
+            data:{
+                content:content
+            }
+        })
+        return res.status(200).json({message:"content updated"})
+    }
+
+    await prisma.document.update({
+        where:{id:docId},
+        data:{
+            title:title
+        }
+    })
+
+    return res.status(200).json({message:"title updated"})
+    } catch (error) {
+        return res.status(400).json({error:"updating fail"})
     }
 
 }
