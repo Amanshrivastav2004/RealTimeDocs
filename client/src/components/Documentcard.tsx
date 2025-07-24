@@ -37,6 +37,12 @@ const Documentcard = ()=>{
         setisopen(!isOpen)
     }
 
+    function stripHtml(html:string){
+        const tempdiv = document.createElement("div")
+        tempdiv.innerHTML = html
+        return tempdiv.innerText
+    }
+
     return (
         <div className="flex flex-wrap gap-8">
             {documents.map(doc=>(
@@ -45,7 +51,7 @@ const Documentcard = ()=>{
             navigate(`/document/${doc.id}`) 
             }}>
                 <div className="grow bg-gray-200 border-b border-b-gray-300">
-                     <p className='text-xs'>{doc.content }</p>
+                     <p className='text-[3px] overflow-auto'>{stripHtml(doc.content || "" )}</p>
                 </div>
                 <div className="flex flex-col  h-[60px] gap-1 ">
                     <div className='text-sm m-2 h-[10px]'>{doc.title || "Untitled Document"}</div>

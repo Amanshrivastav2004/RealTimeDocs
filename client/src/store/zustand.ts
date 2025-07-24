@@ -64,7 +64,6 @@ export const useStore = create<StoreState>((set)=>({
       ...data
     },})),
     updateDocs: async (docId , document) => {
-        // console.log(document)
         const res = await axios.put<Response>(`${import.meta.env.VITE_URL}/api/v1/document/update/${docId}`,{
             title:document.title,
             content:document.content
@@ -73,6 +72,6 @@ export const useStore = create<StoreState>((set)=>({
                 authorization:sessionStorage.getItem('token')
             }
         })
-        alert(res.data.message)
+        
     }
 }))

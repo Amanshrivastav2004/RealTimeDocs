@@ -173,9 +173,7 @@ const QuillEditor = () => {
     if (!quillRef.current) {
       quillRef.current = new Quill(divRef.current,{theme: "snow",modules: {toolbar: toolbarOptions}})
     }
-    alert("quill editor page")
-
-    
+        
   const dataTobackend = () => {
     
     if (debounce.current) clearTimeout(debounce.current)
@@ -202,14 +200,14 @@ const QuillEditor = () => {
   },[])
 
 useEffect(() => {
-      if (quillRef.current) {
+      if (quillRef.current && quillRef.current.root.innerHTML !== content) {
         quillRef.current.root.innerHTML = content
       }
   },[content])
 
   
   return (
-    <div ref={divRef} ></div>
+    <div ref={divRef}  className='min-h-screen'></div>
   )
 }
 

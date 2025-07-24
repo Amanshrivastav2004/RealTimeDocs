@@ -1,10 +1,10 @@
 
 import  QuillEditor  from '../components/QuillEditor';
-import Navbar from '../components/Navbar';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStore } from '../store/zustand';
 import axios from "axios"
+import DocumentNavbar from '../components/DocumentNavbar';
 
 
 
@@ -27,7 +27,7 @@ const Document = ()=>{
   const setDocument = useStore(state=>state.setDocument)
 
 
-  
+  useEffect(()=>{
     const response = async () => {
       
       try {
@@ -38,20 +38,22 @@ const Document = ()=>{
       })
       
       setDocument({title:res.data.document.title || "" , content:res.data.document.content || ""})
-      alert("main doc page")
+      
       } catch (error) {
         console.error("Error fetching doc:", error);
       }
-
     }
     response()
+  })
+    
  
 
     return (
-    <div className="p-4 space-y-4 flex flex-col h-screen w-screen">
-        <Navbar></Navbar>
-      <QuillEditor/>
-      
+    <div className="flex flex-col h-screen w-screen">
+      <DocumentNavbar/>
+      <div className="grow mx-10 sm:mx-20 md:mx-30 lg:mx-40 xl:mx-60 2xl:mx-80 border border-gray-400 bg-white shadow-2xl" >
+      <QuillEditor></QuillEditor>
+      </div>
     </div>
     )
 }
