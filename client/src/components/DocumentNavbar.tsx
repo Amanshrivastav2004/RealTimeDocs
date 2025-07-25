@@ -2,6 +2,11 @@ import { useRef, useState } from 'react';
 import image from '../assets/logo.png'
 import { useStore } from '../store/zustand';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
+interface shareResponse{
+    message:string
+}
 
 
 const DocumentNavbar = ()=>{
@@ -11,6 +16,8 @@ const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 const updateDocs = useStore(state=>state.updateDocs)
 const {docId} = useParams()  
 const [isOpen , setisopen] = useState(false)
+const [email,setEmail]= useState("")
+const [permission , setPermission]= useState("")
 
 const dataTobackend = async(title:string) => {
     setTitle({title:title})
@@ -52,11 +59,11 @@ const dataTobackend = async(title:string) => {
             </div>
             {isOpen && (
   <div className="fixed inset-0 z-50 flex items-center justify-center  bg-black/30">
-    <div className="bg-white p-6 rounded-2xl shadow-lg h-3/4 w-35/100 max-w-2xl flex flex-col">
+    <div className="bg-white p-6 rounded-2xl shadow-lg h-9/10 w-40/100 max-w-2xl flex flex-col">
       <h2 className="text-xl font-bold mb-4">Share Document</h2>
       <div className='mb-4 '>
         <h1 className='text-xl font-semibold'>Email:</h1>
-        <input type="text" className='border border-gray-400 w-full rounded-md p-1' />
+        <input type="text" className='border border-gray-400 w-full rounded-md p-1' value={email} onChange={(e)=>{setEmail(e.target.value)}} />
       </div>
       <div>
         <h1 className='text-xl font-medium'>Collaborators:</h1>
@@ -64,15 +71,32 @@ const dataTobackend = async(title:string) => {
       </div>
       <div className='mt-auto w-full'>
         <h1 className='text-md font-medium w-full mb-2'>Permission</h1>
-        <select name="permission" id="permission" className='w-ful bg-gray-200'>
-            <option value="View Only">View Only</option>
+        <select name="permission" id="permission" className='w-full bg-gray-200' value={permission} onChange={(e)=>{setPermission(e.target.value)}}>
+            <option value="">Select permission</option>
+            <option value="VIEW">View Only</option>
             <option value="Edit">Edit</option>
         </select>
-        <div className='flex justify-end gap-2'>
-            <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded" onClick={() => setisopen(false)}>
+        <div className='flex justify-end gap-2 mt-2'>
+            <button className="p-2 bg-blue-600 text-white rounded" onClick={() => setisopen(false)}>
              Cancel
             </button>
-            <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded" onClick={() => setisopen(false)}>
+            <button className="p-2 bg-blue-600 text-white rounded" onClick={async() =>{ 
+                try {
+                    const response = await axios.post<shareResponse>(`${import.meta.env.VITE_URL}/api/v1/document/share/${docId}`,{
+                        email,
+                        permission
+                    } , {
+                        headers:{
+                            authorization:sessionStorage.getItem('token')
+                        }
+                    })
+                    alert(response.data.message)
+                    setisopen(false)
+                } catch (error:any) {
+                    console.error(error)
+                    alert(error.response.data.error)
+                }
+                }}>
              Submit
             </button>
         </div>
